@@ -5,8 +5,8 @@ variable "node" {}
 variable "storage_size" {
   default = "10Gi"
 }
-variable "storage_class_name" {
-  default = "standard"
+variable "pvc_name" {
+  default = null
 }
 variable "request_cpu" {
   default = "250m"

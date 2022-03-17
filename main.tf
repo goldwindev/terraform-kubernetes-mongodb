@@ -303,19 +303,20 @@ resource "kubernetes_stateful_set" "mongodb_replicaset" {
       }
     }
 
-    volume_claim_template {
-      metadata {
-        name = "datadir"
+    volume {
+      name = "datadir"
+      dynamic "empty_dir" {
+        for_each = length(var.pvc_name) > 0 ? [] : [1]
+        content {
+          medium     = var.empty_dir_medium
+          size_limit = var.empty_dir_size
+        }
       }
-
-      spec {
-        access_modes       = ["ReadWriteOnce"]
-        storage_class_name = var.storage_class_name
-
-        resources {
-          requests = {
-            storage = "${var.storage_size}"
-          }
+      dynamic "persistent_volume_claim" {
+        for_each = length(var.pvc_name) > 0 ? [1] : []
+        content {
+          claim_name = var.pvc_name
+          read_only  = false
         }
       }
     }
