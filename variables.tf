@@ -1,6 +1,7 @@
 variable "namespace" {}
 variable "name" {}
 variable "replicacount" {}
+variable "node" {}
 variable "storage_size" {
   default = "10Gi"
 }
@@ -19,3 +20,4 @@ variable "limit_cpu" {
 variable "limit_mem" {
   default = "2Gi"
 }
+

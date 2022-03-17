@@ -97,6 +97,20 @@ resource "kubernetes_stateful_set" "mongodb_replicaset" {
       }
 
       spec {
+        affinity {
+          node_affinity {
+            required_during_scheduling_ignored_during_execution {
+              node_selector_term {
+                match_expressions {
+                  key      = "kubernetes.io/hostname"
+                  operator = "In"
+                  values   = [var.node_name]
+                }
+              }
+            }
+          }
+        }
+        
         volume {
           name = "config"
 
