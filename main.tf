@@ -110,7 +110,7 @@ resource "kubernetes_stateful_set" "mongodb_replicaset" {
             }
           }
         }
-        
+
         volume {
           name = "config"
 
@@ -193,7 +193,7 @@ resource "kubernetes_stateful_set" "mongodb_replicaset" {
 
         init_container {
           name    = "bootstrap"
-          image   = "mongo:bionic"
+          image   = "mongo:4-bionic"
           command = ["/work-dir/peer-finder"]
           args    = ["-on-start=/init/on-start.sh", "-service=$(POD_NAME)-mongodb-replicaset"]
 
@@ -273,7 +273,7 @@ resource "kubernetes_stateful_set" "mongodb_replicaset" {
           }
 
           resources {
-            limits     = {
+            limits = {
               cpu    = var.limit_cpu
               memory = var.limit_mem
             }
