@@ -2,6 +2,8 @@ variable "namespace" {}
 variable "name" {}
 variable "replicacount" {}
 variable "node_name" {}
+variable "username" {}
+variable "password" {}
 variable "storage_size" {
   default = "10Gi"
 }
