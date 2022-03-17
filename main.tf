@@ -136,6 +136,24 @@ resource "kubernetes_stateful_set" "mongodb_replicaset" {
           name = "configdir"
         }
 
+        volume {
+          name = "datadir"
+          dynamic "empty_dir" {
+            for_each = length(var.pvc_name) > 0 ? [] : [1]
+            content {
+              medium     = var.empty_dir_medium
+              size_limit = var.empty_dir_size
+            }
+          }
+          dynamic "persistent_volume_claim" {
+            for_each = length(var.pvc_name) > 0 ? [1] : []
+            content {
+              claim_name = var.pvc_name
+              read_only  = false
+            }
+          }
+        }
+
         init_container {
           name    = "copy-config"
           image   = "busybox:1.29.3"
@@ -299,24 +317,6 @@ resource "kubernetes_stateful_set" "mongodb_replicaset" {
           run_as_user     = 999
           run_as_non_root = true
           fs_group        = 999
-        }
-      }
-    }
-
-    volume {
-      name = "datadir"
-      dynamic "empty_dir" {
-        for_each = length(var.pvc_name) > 0 ? [] : [1]
-        content {
-          medium     = var.empty_dir_medium
-          size_limit = var.empty_dir_size
-        }
-      }
-      dynamic "persistent_volume_claim" {
-        for_each = length(var.pvc_name) > 0 ? [1] : []
-        content {
-          claim_name = var.pvc_name
-          read_only  = false
         }
       }
     }
