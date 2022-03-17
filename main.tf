@@ -86,8 +86,7 @@ resource "kubernetes_stateful_set" "mongodb_replicaset" {
     template {
       metadata {
         labels = {
-          app = "mongodb-replicaset"
-
+          app     = "mongodb-replicaset"
           release = var.name
         }
 
@@ -186,61 +185,6 @@ resource "kubernetes_stateful_set" "mongodb_replicaset" {
           volume_mount {
             name       = "workdir"
             mount_path = "/work-dir"
-          }
-
-          image_pull_policy = "IfNotPresent"
-        }
-
-        init_container {
-          name    = "bootstrap"
-          image   = "mongo:4-bionic"
-          command = ["/work-dir/peer-finder"]
-          args    = ["-on-start=/init/on-start.sh", "-service=$(POD_NAME)-mongodb-replicaset"]
-
-          env {
-            name  = "POD_NAME"
-            value = var.name
-          }
-
-          env {
-            name = "POD_NAMESPACE"
-
-            value_from {
-              field_ref {
-                api_version = "v1"
-                field_path  = "metadata.namespace"
-              }
-            }
-          }
-
-          env {
-            name  = "REPLICA_SET"
-            value = "rs0"
-          }
-
-          env {
-            name  = "TIMEOUT"
-            value = "900"
-          }
-
-          volume_mount {
-            name       = "workdir"
-            mount_path = "/work-dir"
-          }
-
-          volume_mount {
-            name       = "init"
-            mount_path = "/init"
-          }
-
-          volume_mount {
-            name       = "configdir"
-            mount_path = "/data/configdb"
-          }
-
-          volume_mount {
-            name       = "datadir"
-            mount_path = "/data/db"
           }
 
           image_pull_policy = "IfNotPresent"
